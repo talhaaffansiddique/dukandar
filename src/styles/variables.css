@@ -1,0 +1,90 @@
+:root {
+  /* Common Values */
+  --font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --transition-slow: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --border-radius-sm: 6px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 20px;
+  --border-radius-full: 9999px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 15px rgba(13, 148, 136, 0.15);
+
+  /* Light Theme variables (Default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-surface: rgba(255, 255, 255, 0.7);
+  --bg-glass: rgba(255, 255, 255, 0.4);
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary: #94a3b8;
+  --text-light: #ffffff;
+  
+  --border-color: #e2e8f0;
+  --border-color-hover: #cbd5e1;
+  --border-glass: rgba(255, 255, 255, 0.6);
+
+  --primary: #0d9488;
+  --primary-hover: #0f766e;
+  --primary-light: #ccfbf1;
+  --primary-glow: rgba(13, 148, 136, 0.3);
+  
+  --success: #10b981;
+  --success-hover: #059669;
+  --success-light: #d1fae5;
+  
+  --danger: #f43f5e;
+  --danger-hover: #e11d48;
+  --danger-light: #ffe4e6;
+  
+  --warning: #f59e0b;
+  --warning-light: #fef3c7;
+
+  --accent-blue: #3b82f6;
+  --accent-purple: #8b5cf6;
+}
+
+/* Dark Theme overrides */
+[data-theme='dark'] {
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+  --bg-surface: rgba(17, 24, 39, 0.7);
+  --bg-glass: rgba(17, 24, 39, 0.4);
+  
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --text-light: #ffffff;
+  
+  --border-color: #374151;
+  --border-color-hover: #4b5563;
+  --border-glass: rgba(255, 255, 255, 0.05);
+
+  --primary: #14b8a6;
+  --primary-hover: #2dd4bf;
+  --primary-light: rgba(20, 184, 166, 0.15);
+  --primary-glow: rgba(20, 184, 166, 0.4);
+  
+  --success: #10b981;
+  --success-hover: #34d399;
+  --success-light: rgba(16, 185, 129, 0.15);
+  
+  --danger: #fb7185;
+  --danger-hover: #fda4af;
+  --danger-light: rgba(251, 113, 133, 0.15);
+  
+  --warning: #fbbf24;
+  --warning-light: rgba(251, 191, 36, 0.15);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 15px rgba(20, 184, 166, 0.2);
+}

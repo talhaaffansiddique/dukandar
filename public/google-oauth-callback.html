@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Sign-In Callback</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f7f9fa;
+      color: #3c4043;
+    }
+    .card {
+      background: white;
+      padding: 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 360px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border-left-color: #1a73e8;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 500;
+    }
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: #5f6368;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="spinner"></div>
+    <h3>Signing in with Google</h3>
+    <p id="status-msg">Verifying your credentials...</p>
+  </div>
+
+  <script>
+    // Parse Google response hash
+    const params = new URLSearchParams(window.location.hash.substring(1));
+    const accessToken = params.get('access_token');
+    const error = params.get('error');
+
+    const statusMsg = document.getElementById('status-msg');
+
+    if (error) {
+      statusMsg.textContent = 'Authentication failed: ' + error;
+      if (window.opener) {
+        window.opener.postMessage({ type: 'GOOGLE_SIGN_IN_ERROR', error: error }, '*');
+      }
+      setTimeout(() => window.close(), 2000);
+    } else if (accessToken) {
+      statusMsg.textContent = 'Fetching your Gmail profile details...';
+      
+      // Fetch dynamic user profile info from Google API
+      fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to retrieve userinfo profile.');
+        return res.json();
+      })
+      .then(user => {
+        statusMsg.textContent = 'Welcome back, ' + user.name + '! Logging in...';
+        
+        if (window.opener) {
+          window.opener.postMessage({
+            type: 'GOOGLE_SIGN_IN_SUCCESS',
+            email: user.email,
+            name: user.name,
+            picture: user.picture
+          }, '*');
+        }
+        setTimeout(() => window.close(), 800);
+      })
+      .catch(err => {
+        console.error('Error fetching Google Userinfo:', err);
+        statusMsg.textContent = 'Failed to load profile details.';
+        if (window.opener) {
+          window.opener.postMessage({ type: 'GOOGLE_SIGN_IN_ERROR', error: 'Profile fetch failed' }, '*');
+        }
+        setTimeout(() => window.close(), 2000);
+      });
+    } else {
+      statusMsg.textContent = 'Invalid callback parameters.';
+      setTimeout(() => window.close(), 2000);
+    }
+  </script>
+
+</body>
+</html>
