@@ -173,7 +173,12 @@ export default function App() {
 
   // Handle Logout
   const handleLogout = () => {
+    const confirmed = window.confirm(`Log out of Dukandar as ${currentUser?.name} (${currentUser?.email})?`);
+    if (!confirmed) return;
     localStorage.removeItem('current_user_email');
+    // Clear the remembered Google account chooser list so the next person on this
+    // device/browser doesn't see a previous user's account pre-filled.
+    localStorage.removeItem('google_saved_accounts');
     setCurrentUser(null);
   };
 
@@ -374,12 +379,15 @@ export default function App() {
                 <span style={{ fontWeight: 600, fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {currentUser.name}
                 </span>
+                <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={currentUser.email}>
+                  {currentUser.email}
+                </span>
                 <span className="role-badge" style={{ fontSize: '0.65rem', alignSelf: 'flex-start' }}>
                   {currentUser.role}
                 </span>
               </div>
             ) : (
-              <div className="role-badge" style={{ fontSize: '0.75rem', padding: '0.25rem 0.45rem', borderRadius: '4px', textAlign: 'center' }} title={`${currentUser.name} (${currentUser.role})`}>
+              <div className="role-badge" style={{ fontSize: '0.75rem', padding: '0.25rem 0.45rem', borderRadius: '4px', textAlign: 'center' }} title={`${currentUser.name} (${currentUser.email}) — ${currentUser.role}`}>
                 {currentUser.name.charAt(0).toUpperCase()}
               </div>
             )}
