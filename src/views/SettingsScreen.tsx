@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ToggleLeft, ToggleRight, Settings, Receipt, Monitor, Sparkles, Building2, Upload, CheckSquare, Square } from 'lucide-react';
+import { ToggleLeft, ToggleRight, Settings, Receipt, Monitor, Sparkles, Building2, Upload, CheckSquare, Square, Copy, Check, ExternalLink } from 'lucide-react';
 
 export default function SettingsScreen() {
   // Existing v1.06 Toggles
@@ -31,6 +31,15 @@ export default function SettingsScreen() {
   // v1.10 Feature Toggles & Google OAuth Configurations
   const [featureGoogleOauth, setFeatureGoogleOauth] = useState(() => localStorage.getItem('toggle_v110_google_oauth') !== 'false');
   const [googleClientId, setGoogleClientId] = useState(() => localStorage.getItem('setting_google_client_id') || '');
+  const [redirectUriCopied, setRedirectUriCopied] = useState(false);
+  const oauthRedirectUri = window.location.origin + import.meta.env.BASE_URL + 'google-oauth-callback.html';
+
+  const copyRedirectUri = () => {
+    navigator.clipboard.writeText(oauthRedirectUri).then(() => {
+      setRedirectUriCopied(true);
+      setTimeout(() => setRedirectUriCopied(false), 2000);
+    });
+  };
 
   // Company Master Profile State
   const [companyName, setCompanyName] = useState(() => localStorage.getItem('company_name') || '');
@@ -443,22 +452,71 @@ export default function SettingsScreen() {
               <Building2 size={20} style={{ color: 'var(--primary)' }} /> Google Authentication Config
             </h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>
-              Configure a real Google OAuth 2.0 client ID for secure login on web and mobile. If left blank, a fallback chooser is used.
+              Without a Client ID below, sign-in uses a local demo account chooser (for testing only — it does not check real Gmail accounts). To show the actual Google sign-in screen, follow these steps:
             </p>
+
+            <ol style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <li>
+                Open{' '}
+                <a
+                  href="https://console.cloud.google.com/apis/credentials"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+                >
+                  Google Cloud Console → Credentials <ExternalLink size={12} />
+                </a>{' '}
+                and create an <strong>OAuth client ID</strong> (type: Web application).
+              </li>
+              <li>
+                Under <strong>Authorized JavaScript origins</strong>, add: <code style={{ background: 'var(--bg-secondary)', padding: '0.1rem 0.35rem', borderRadius: 4 }}>{window.location.origin}</code>
+              </li>
+              <li>
+                Under <strong>Authorized redirect URIs</strong>, add the exact URL below (copy it using the button):
+              </li>
+            </ol>
+
+            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+              <input
+                type="text"
+                className="input-control"
+                value={oauthRedirectUri}
+                readOnly
+                onFocus={(e) => e.target.select()}
+                style={{ width: '100%', fontFamily: 'monospace', fontSize: '0.8rem' }}
+              />
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={copyRedirectUri}
+                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', whiteSpace: 'nowrap' }}
+              >
+                {redirectUriCopied ? <Check size={16} /> : <Copy size={16} />}
+                {redirectUriCopied ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+
             <div className="form-group" style={{ margin: 0 }}>
-              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>Google Client ID</label>
+              <label className="form-label" style={{ fontSize: '0.85rem', fontWeight: 600, display: 'block', marginBottom: '0.5rem' }}>
+                Google Client ID <span style={{ fontWeight: 400, color: 'var(--text-secondary)' }}>(paste the one Google generates for you)</span>
+              </label>
               <input 
                 type="text" 
                 className="input-control" 
                 value={googleClientId} 
                 onChange={(e) => {
-                  setGoogleClientId(e.target.value);
-                  localStorage.setItem('setting_google_client_id', e.target.value);
+                  setGoogleClientId(e.target.value.trim());
+                  localStorage.setItem('setting_google_client_id', e.target.value.trim());
                   window.dispatchEvent(new Event('app-settings-updated'));
                 }}
-                placeholder="Paste client_id.apps.googleusercontent.com"
+                placeholder="e.g. 1234567890-abcdefg.apps.googleusercontent.com"
                 style={{ width: '100%' }}
               />
+              {googleClientId && (
+                <p style={{ fontSize: '0.78rem', color: 'var(--primary)', marginTop: '0.5rem', marginBottom: 0 }}>
+                  ✓ Real Google Sign-In is active. The login button will now open the official Google account picker.
+                </p>
+              )}
             </div>
           </div>
 
