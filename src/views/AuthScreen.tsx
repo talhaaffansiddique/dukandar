@@ -130,7 +130,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
     
     if (clientId && isRealOAuth) {
       // Real Google OAuth 2.0 Flow!
-      const redirectUri = window.location.origin + '/google-oauth-callback.html';
+  const redirectUri = window.location.origin + import.meta.env.BASE_URL + 'google-oauth-callback.html';
       const oauthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20profile%20email&prompt=select_account`;
       
       window.open(
@@ -141,7 +141,7 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
     } else {
       // Fallback/Simulated Google Choose Account popup (which dynamically renders saved accounts)
       window.open(
-        '/google-login.html',
+         import.meta.env.BASE_URL + 'google-login.html',
         'Google Sign-In',
         `width=${width},height=${height},left=${left},top=${top},status=no,resizable=yes`
       );
